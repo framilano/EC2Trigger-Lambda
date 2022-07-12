@@ -7,11 +7,13 @@ logger.setLevel("INFO")
 
 region = 'eu-south-1'   #or whatever region your instances are in
 ec2 = boto3.client('ec2', region_name=region)
-#payload/event example
-#{   
-#    "trigger": "stop",
-#    "instances": ["istance-id0", "istance-id1"]
-#}
+
+# payload/event example
+# {   
+#     "trigger": "stop",
+#     "instances": ["istance-id0", "istance-id1"]
+# }
+
 def lambda_handler(event, context):
     payload_body = {}
     if (type(event['body']) is str): payload_body = json.loads(event['body'])
