@@ -1,26 +1,20 @@
 import json
 import boto3
 import logging
+from base64 import b64decode
+
 
 logger = logging.getLogger()
 logger.setLevel("INFO")
 
-region = 'eu-south-1'   #or whatever region your instances are in
+region = 'eu-south-1'
 ec2 = boto3.client('ec2', region_name=region)
 
-# payload/event example
-# {   
-#     "trigger": "stop",
-#     "instances": ["istance-id0", "istance-id1"]
-# }
-
 def lambda_handler(event, context):
-    payload_body = {}
-    if (type(event['body']) is str): payload_body = json.loads(event['body'])
+    logger.info(f"INPUT: {event['body']}")
+    if (event['body'] is str): payload_body = json.loads(event['body'])
     else: payload_body = event['body']
-    
-    logger.info(f"INPUT: {payload_body}")
-    
+
     trigger = payload_body['trigger']
     instances = []
     response_body = ""
@@ -29,11 +23,11 @@ def lambda_handler(event, context):
     
     if (trigger == "stop"):
         ec2.stop_instances(InstanceIds=instances)
-        response_body = json.dumps("Stopped EC2 instances")
-    else:
-        ec2.stop_instances(InstanceIds=instances)
-        response_body = json.dumps("Started EC2 instances")
-    
+        response_body = "Stopped EC2 instances"
+    elif (trigger == "start"):
+        ec2.start_instances(InstanceIds=instances)
+        response_body = "Started EC2 instances"
+    else: response_body = "No valid action selected for EC2 - Check payload fields"
     return {
         'statusCode': 200,
         'body': response_body
