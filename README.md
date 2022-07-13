@@ -35,3 +35,7 @@ To interact with an EC2 instance, your Lambda IAM role must have this Statement:
   ],
   "Resource": "*"
 }
+```
+Here a diagram showing the correct calls flow.
+
+![EC2 Trigger Lambda Flow](https://i.imgur.com/UDvZcCy.png)
